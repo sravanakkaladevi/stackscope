@@ -1,0 +1,9 @@
+{
+  "name": "stackscope",
+  "version": "0.1.0",
+  "private": true,
+  "description": "A local-first browser extension for detecting webpage technologies and languages.",
+  "scripts": {
+    "validate": "node -e \"JSON.parse(require('fs').readFileSync('manifest.json', 'utf8')); console.log('manifest.json is valid')\" && node --check content.js && node --check popup.js && node --check injected.js && node --check techIcons.js && node --check background.js"
+  }
+}
