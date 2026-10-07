@@ -309,6 +309,107 @@ const TECH_ICONS = {
     <path d="M12 4l6 6-6 6-6-6 6-6zm0 16l-4-4 4-4 4 4-4 4z" fill="#FFF"/>
   </svg>`,
 
+  "Google Cloud / Infrastructure": `<svg viewBox="0 0 24 24" width="22" height="22" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96z" fill="#4285F4"/>
+    <path d="M19 18H6c-2.21 0-4-1.79-4-4 0-2.05 1.53-3.76 3.56-3.97l1.07-.11.5-.95C8.08 7.14 9.94 6 12 6c2.62 0 4.88 1.86 5.39 4.43l.3 1.5 1.53.11c1.56.1 2.78 1.41 2.78 2.96 0 1.65-1.35 3-3 3z" fill="#FFF"/>
+  </svg>`,
+
+  "Google Workspace": `<svg viewBox="0 0 24 24" width="22" height="22" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <rect width="24" height="24" rx="5" fill="#1A73E8"/>
+    <path d="M6 16.5l4-7.5h8l-4 7.5H6z" fill="#EA4335"/>
+    <path d="M6 7.5l4 7.5h8l-4-7.5H6z" fill="#34A853"/>
+  </svg>`,
+
+  "Google Closure Library": `<svg viewBox="0 0 24 24" width="22" height="22" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <rect width="24" height="24" rx="5" fill="#4285F4"/>
+    <text x="12" y="16" font-family="sans-serif" font-weight="bold" font-size="11" fill="#FFF" text-anchor="middle">goog</text>
+  </svg>`,
+
+  "Google Wiz UI Framework": `<svg viewBox="0 0 24 24" width="22" height="22" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="12" cy="12" r="10" fill="#34A853"/>
+    <text x="12" y="16" font-family="sans-serif" font-weight="bold" font-size="10" fill="#FFF" text-anchor="middle">Wiz</text>
+  </svg>`,
+
+  "GitHub Pages": `<svg viewBox="0 0 24 24" width="22" height="22" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="12" cy="12" r="10" fill="#24292E"/>
+    <path d="M12 4a8 8 0 0 0-2.5 15.6c.4.1.5-.2.5-.4v-1.4c-2.2.5-2.7-1-2.7-1-.4-.9-.9-1.2-.9-1.2-.7-.5.1-.5.1-.5.8.1 1.2.8 1.2.8.7 1.3 1.9.9 2.3.7.1-.5.3-.9.5-1.1-1.8-.2-3.6-.9-3.6-4 0-.9.3-1.6.8-2.1-.1-.2-.4-1 .1-2.1 0 0 .7-.2 2.2.8a7.7 7.7 0 0 1 4 0c1.5-1 2.2-.8 2.2-.8.5 1.1.2 1.9.1 2.1.5.6.8 1.3.8 2.1 0 3.1-1.9 3.8-3.7 4 .3.3.6.8.6 1.6v2.4c0 .2.1.5.6.4A8 8 0 0 0 12 4z" fill="#FFF"/>
+  </svg>`,
+
+  "Cloudflare Pages": `<svg viewBox="0 0 24 24" width="22" height="22" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <rect width="24" height="24" rx="5" fill="#F38020"/>
+    <path d="M12 4l7 12H5l7-12z" fill="#FFF"/>
+  </svg>`,
+
+  "Amazon Web Services (AWS)": `<svg viewBox="0 0 24 24" width="22" height="22" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <rect width="24" height="24" rx="5" fill="#232F3E"/>
+    <path d="M6 14.5c3 2 8 2 12 0" stroke="#FF9900" stroke-width="2" stroke-linecap="round"/>
+    <path d="M16 13.5l3 1.5-1.5-3" fill="#FF9900"/>
+  </svg>`,
+
+  "Firebase Hosting": `<svg viewBox="0 0 24 24" width="22" height="22" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M3.8 17.7L7.5 3.2a.8.8 0 0 1 1.5.1l2.4 4.8 2.2-4.1a.8.8 0 0 1 1.4.1l5.2 13.6-8.2 4.6a2 2 0 0 1-2 0l-6-4.6z" fill="#FFCA28"/>
+  </svg>`,
+
+  Render: `<svg viewBox="0 0 24 24" width="22" height="22" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <rect width="24" height="24" rx="5" fill="#46E3B7"/>
+    <path d="M7 17V7h5a3 3 0 0 1 0 6H7v4h3" stroke="#000" stroke-width="2"/>
+  </svg>`,
+
+  "Fly.io": `<svg viewBox="0 0 24 24" width="22" height="22" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <rect width="24" height="24" rx="5" fill="#24185B"/>
+    <path d="M6 16L12 6l6 10H6z" fill="#7B3FE4"/>
+  </svg>`,
+
+  Heroku: `<svg viewBox="0 0 24 24" width="22" height="22" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <rect width="24" height="24" rx="5" fill="#430098"/>
+    <path d="M7 6v12M17 6v12M7 12h10" stroke="#FFF" stroke-width="2.5"/>
+  </svg>`,
+
+  "Microsoft Azure": `<svg viewBox="0 0 24 24" width="22" height="22" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M4 19h7.5L16.5 5H10L4 19zm8.5-7.5L18.5 19H20L15.5 8l-3 3.5z" fill="#0089D6"/>
+  </svg>`,
+
+  "WP Engine": `<svg viewBox="0 0 24 24" width="22" height="22" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <rect width="24" height="24" rx="5" fill="#00CCB4"/>
+    <text x="12" y="16" font-family="sans-serif" font-weight="bold" font-size="11" fill="#000" text-anchor="middle">WPE</text>
+  </svg>`,
+
+  Kinsta: `<svg viewBox="0 0 24 24" width="22" height="22" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <rect width="24" height="24" rx="5" fill="#5340FF"/>
+    <text x="12" y="16" font-family="sans-serif" font-weight="bold" font-size="11" fill="#FFF" text-anchor="middle">K</text>
+  </svg>`,
+
+  Pantheon: `<svg viewBox="0 0 24 24" width="22" height="22" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <rect width="24" height="24" rx="5" fill="#EF443B"/>
+    <circle cx="12" cy="12" r="6" stroke="#FFF" stroke-width="2"/>
+  </svg>`,
+
+  Nginx: `<svg viewBox="0 0 24 24" width="22" height="22" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <rect width="24" height="24" rx="5" fill="#009639"/>
+    <path d="M7 17V7l10 10V7" stroke="#FFF" stroke-width="2.5" stroke-linecap="round"/>
+  </svg>`,
+
+  Apache: `<svg viewBox="0 0 24 24" width="22" height="22" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <rect width="24" height="24" rx="5" fill="#D22128"/>
+    <path d="M12 4c-3 4-5 8-5 12h10c0-4-2-8-5-12z" fill="#FFF"/>
+  </svg>`,
+
+  LiteSpeed: `<svg viewBox="0 0 24 24" width="22" height="22" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <rect width="24" height="24" rx="5" fill="#003566"/>
+    <path d="M6 14l6-8 6 8h-4v4h-4v-4H6z" fill="#00A8E8"/>
+  </svg>`,
+
+  Caddy: `<svg viewBox="0 0 24 24" width="22" height="22" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <rect width="24" height="24" rx="5" fill="#222"/>
+    <circle cx="12" cy="12" r="6" stroke="#00D2FF" stroke-width="2.5"/>
+  </svg>`,
+
+  "Express.js": `<svg viewBox="0 0 24 24" width="22" height="22" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <rect width="24" height="24" rx="5" fill="#000"/>
+    <text x="12" y="16" font-family="sans-serif" font-weight="bold" font-size="9" fill="#FFF" text-anchor="middle">express</text>
+  </svg>`,
+
+
   // --- Languages ---
   JavaScript: `<svg viewBox="0 0 24 24" width="22" height="22" fill="none" xmlns="http://www.w3.org/2000/svg">
     <rect width="24" height="24" rx="4" fill="#F7DF1E"/>
@@ -454,6 +555,62 @@ const TECH_METADATA = {
   "Google Tag Manager": {
     description: "A tag management system to manage marketing and analytics scripts.",
     url: "https://tagmanager.google.com"
+  },
+  VWO: {
+    description: "An experimentation platform for A/B testing, personalization, and conversion optimization.",
+    url: "https://vwo.com"
+  },
+  Sentry: {
+    description: "Application monitoring that captures errors, traces, and performance issues.",
+    url: "https://sentry.io"
+  },
+  hCaptcha: {
+    description: "A privacy-focused CAPTCHA service used to protect forms and sign-in flows.",
+    url: "https://www.hcaptcha.com"
+  },
+  "Microsoft Advertising": {
+    description: "Microsoft's advertising platform and UET conversion tracking service.",
+    url: "https://about.ads.microsoft.com"
+  },
+  "Howler.js": {
+    description: "A JavaScript audio library for cross-browser playback and audio controls.",
+    url: "https://howlerjs.com"
+  },
+  "Framer Motion": {
+    description: "A motion library for animations and interactions in React applications.",
+    url: "https://motion.dev"
+  },
+  "Base UI": {
+    description: "An open-source library of unstyled, accessible React components.",
+    url: "https://base-ui.com"
+  },
+  Cookiebot: {
+    description: "A consent management platform for cookie consent and privacy compliance.",
+    url: "https://www.cookiebot.com"
+  },
+  "Cookie Control": {
+    description: "A consent management tool from Civic for controlling website cookies.",
+    url: "https://www.civicuk.com/cookie-control"
+  },
+  PartnerStack: {
+    description: "A platform for managing partner, affiliate, and referral programs.",
+    url: "https://partnerstack.com"
+  },
+  PWA: {
+    description: "A Progressive Web App uses browser capabilities to provide an installable, app-like experience.",
+    url: "https://developer.mozilla.org/en-US/docs/Web/Progressive_web_apps"
+  },
+  "Open Graph": {
+    description: "Metadata that controls how pages are represented when shared on social platforms.",
+    url: "https://ogp.me"
+  },
+  "HTTP/3": {
+    description: "The third major version of HTTP, transported over QUIC.",
+    url: "https://developer.mozilla.org/en-US/docs/Glossary/HTTP_3"
+  },
+  "Priority Hints": {
+    description: "A browser hint that lets pages communicate the relative fetch priority of resources.",
+    url: "https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/fetchpriority"
   },
   Mixpanel: {
     description: "Product analytics tool that helps track user interactions and conversion funnels.",

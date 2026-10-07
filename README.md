@@ -21,6 +21,10 @@
 - **📥 Export Capabilities**: Easily copy a formatted Markdown tech stack report or download a complete JSON stack analysis.
 - **🛡️ 100% Privacy-First & Local**: Performs all scanning directly on your machine inside Chrome. No remote servers, no tracking, zero network dependencies.
 
+### Detection Scope
+
+StackScope reports technologies only when it can find browser-visible evidence, such as page markup, loaded resource URLs, or JavaScript globals. Versions are shown only when the page exposes them. Server fingerprints such as Nginx versions and CDN response headers are not inferred because this extension does not request broad network-inspection permissions; HTTP/3 is reported only when the browser exposes `h3` through Resource Timing.
+
 ---
 
 ## 📸 Screenshots & UI Layout

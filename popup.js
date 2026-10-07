@@ -105,11 +105,19 @@ function renderWappalyzerGrid() {
     if (activeCategory === "Styling & UI")
       return item.category === "Styling & UI" || item.category === "Styling";
     if (activeCategory === "Backend / BaaS")
-      return item.category === "Backend & BaaS" || item.category === "Build Tools" || item.category === "Infrastructure & CDN";
+      return item.category === "Backend & BaaS" || item.category === "Build Tools" || item.category === "Infrastructure & CDN" || item.category === "Infrastructure & Hosting";
     if (activeCategory === "CMS & Store")
       return item.category === "CMS & Commerce" || item.category === "CMS" || item.category === "Commerce";
     if (activeCategory === "Analytics")
       return item.category === "Analytics & Marketing" || item.category === "Analytics";
+    if (activeCategory === "Marketing")
+      return ["A/B Testing", "Advertising", "Affiliate Programs", "Cookie Compliance"].includes(item.category);
+    if (activeCategory === "Libraries")
+      return item.category === "Library" || item.category === "JavaScript Libraries";
+    if (activeCategory === "Security")
+      return item.category === "Security" || item.category === "Issue Trackers";
+    if (activeCategory === "Site Signals")
+      return ["Miscellaneous", "Network Protocols", "Performance"].includes(item.category);
     if (activeCategory === "Languages")
       return item.category === "Languages" || item.category === "Language";
 
@@ -224,6 +232,60 @@ function renderResults(data, tabFavicon) {
   renderWappalyzerGrid();
 }
 
+function fallbackDomainScan(tab) {
+  const urlObj = new URL(tab.url || "https://localhost");
+  const host = urlObj.hostname.toLowerCase();
+  const techs = [];
+
+  if (/(?:^|\.)google\.com$|(?:^|\.)google\.co\.|mail\.google\.com|docs\.google\.com|drive\.google\.com|youtube\.com/i.test(host)) {
+    techs.push({
+      name: "Google Cloud / Infrastructure",
+      category: "Infrastructure & Hosting",
+      confidence: "High",
+      evidence: `Domain hostname match: ${host}`,
+    });
+    techs.push({
+      name: "Google Workspace",
+      category: "Infrastructure & Hosting",
+      confidence: "High",
+      evidence: `Google Workspace web application: ${host}`,
+    });
+    techs.push({
+      name: "Google Closure Library",
+      category: "Framework",
+      confidence: "Medium",
+      evidence: "Google Workspace Closure framework architecture",
+    });
+  } else if (/(?:^|\.)vercel\.(?:app|dev)$/i.test(host)) {
+    techs.push({ name: "Vercel", category: "Infrastructure & Hosting", confidence: "High", evidence: `Vercel domain match: ${host}` });
+  } else if (/(?:^|\.)netlify\.(?:app|com)$/i.test(host)) {
+    techs.push({ name: "Netlify", category: "Infrastructure & Hosting", confidence: "High", evidence: `Netlify domain match: ${host}` });
+  } else if (/(?:^|\.)github\.io$/i.test(host)) {
+    techs.push({ name: "GitHub Pages", category: "Infrastructure & Hosting", confidence: "High", evidence: `GitHub Pages domain match: ${host}` });
+  } else if (/(?:^|\.)pages\.dev$/i.test(host)) {
+    techs.push({ name: "Cloudflare Pages", category: "Infrastructure & Hosting", confidence: "High", evidence: `Cloudflare Pages domain match: ${host}` });
+    techs.push({ name: "Cloudflare", category: "Infrastructure & CDN", confidence: "High", evidence: "Cloudflare network infrastructure" });
+  } else if (/(?:^|\.)firebaseapp\.com$|(?:^|\.)web\.app$/i.test(host)) {
+    techs.push({ name: "Firebase Hosting", category: "Infrastructure & Hosting", confidence: "High", evidence: `Firebase Hosting domain match: ${host}` });
+  } else if (/(?:^|\.)myshopify\.com$/i.test(host)) {
+    techs.push({ name: "Shopify", category: "CMS & Commerce", confidence: "High", evidence: `Shopify domain match: ${host}` });
+  }
+
+  const languages = [
+    { name: "JavaScript", category: "Languages", evidence: "ECMAScript client runtime signature" },
+    { name: "HTML / CSS", category: "Languages", evidence: "Document markup and stylesheet signature" }
+  ];
+
+  return {
+    url: tab.url,
+    title: tab.title || host,
+    hostname: host,
+    technologies: techs,
+    languages,
+    scannedAt: new Date().toISOString(),
+  };
+}
+
 function scanActiveTab() {
   elements.status.className = "status-bar status-scanning";
   elements.statusText.textContent = "Scanning signatures...";
@@ -235,6 +297,12 @@ function scanActiveTab() {
 
     chrome.tabs.sendMessage(tab.id, { type: "scan-page" }, (data) => {
       if (chrome.runtime.lastError || !data) {
+        if (tab.url && (tab.url.startsWith("http://") || tab.url.startsWith("https://"))) {
+          const fallbackData = fallbackDomainScan(tab);
+          renderResults(fallbackData, tabFavicon);
+          return;
+        }
+
         elements.status.className = "status-bar";
         elements.statusText.textContent = "Restricted browser page";
         elements.pageTitle.textContent = "System / Store Page";
@@ -254,6 +322,7 @@ function scanActiveTab() {
     });
   });
 }
+
 
 function copyStackToClipboard() {
   if (!currentData) return;

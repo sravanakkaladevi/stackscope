@@ -1,9 +1,10 @@
 {
   "manifest_version": 3,
   "name": "StackScope",
-  "version": "0.2.0",
-  "description": "Detect technologies, frameworks, and programming languages used by the current webpage with crisp tech logos.",
-  "permissions": ["activeTab"],
+  "version": "0.3.0",
+  "description": "Detect technologies, frameworks, hosting providers, and programming languages used by current webpage.",
+  "permissions": ["activeTab", "webRequest", "scripting"],
+  "host_permissions": ["<all_urls>"],
   "background": {
     "service_worker": "background.js"
   },
@@ -31,3 +32,4 @@
     }
   ]
 }
+

@@ -10,7 +10,14 @@
       {
         name: "React",
         category: "Framework",
-        test: () => window.React || document.querySelector("[data-reactroot]"),
+        test: () =>
+          window.React ||
+          document.querySelector("[data-reactroot], #__next") ||
+          Array.from(document.querySelectorAll("*"))
+            .slice(0, 1000)
+            .some((element) =>
+              Object.keys(element).some((key) => key.startsWith("__reactFiber$") || key.startsWith("__reactContainer$"))
+            ),
         getVersion: () => window.React?.version || null,
         evidence: "window.React or data-reactroot DOM element",
       },
@@ -214,9 +221,9 @@
       {
         name: "Google Analytics",
         category: "Analytics & Marketing",
-        test: () => window.google_tag_manager || window.ga || window.gtag || window.GoogleAnalyticsObject,
+        test: () => window.ga || window.gtag || window.GoogleAnalyticsObject,
         getVersion: () => null,
-        evidence: "window.ga, window.gtag, or google_tag_manager",
+        evidence: "window.ga, window.gtag, or GoogleAnalyticsObject",
       },
       {
         name: "Google Tag Manager",
@@ -266,6 +273,62 @@
         test: () => window.$crisp,
         getVersion: () => null,
         evidence: "window.$crisp global",
+      },
+      {
+        name: "VWO",
+        category: "A/B Testing",
+        test: () => window._vwo_code || window._vwo_exp,
+        getVersion: () => null,
+        evidence: "VWO page configuration global",
+      },
+      {
+        name: "Sentry",
+        category: "Issue Trackers",
+        test: () => window.Sentry || window.__SENTRY__,
+        getVersion: () => window.Sentry?.SDK_VERSION || null,
+        evidence: "window.Sentry or window.__SENTRY__ global",
+      },
+      {
+        name: "hCaptcha",
+        category: "Security",
+        test: () => window.hcaptcha,
+        getVersion: () => null,
+        evidence: "window.hcaptcha global",
+      },
+      {
+        name: "Microsoft Advertising",
+        category: "Advertising",
+        test: () => window.uetq,
+        getVersion: () => null,
+        evidence: "Microsoft UET queue global",
+      },
+      {
+        name: "Howler.js",
+        category: "JavaScript Libraries",
+        test: () => window.Howler,
+        getVersion: () => window.Howler?.version || null,
+        evidence: "window.Howler global",
+      },
+      {
+        name: "Cookiebot",
+        category: "Cookie Compliance",
+        test: () => window.Cookiebot,
+        getVersion: () => null,
+        evidence: "window.Cookiebot consent API",
+      },
+      {
+        name: "Cookie Control",
+        category: "Cookie Compliance",
+        test: () => window.CookieControl,
+        getVersion: () => null,
+        evidence: "window.CookieControl global",
+      },
+      {
+        name: "PartnerStack",
+        category: "Affiliate Programs",
+        test: () => window.partnerStack || window.PartnerStack,
+        getVersion: () => null,
+        evidence: "PartnerStack page integration global",
       },
 
       // --- Auth & Payments ---
