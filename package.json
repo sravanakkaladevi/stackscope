@@ -1,9 +1,10 @@
 {
   "name": "stackscope",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "private": true,
-  "description": "A local-first browser extension for detecting webpage technologies and languages.",
+  "description": "Deep tech stack & framework inspector powered by Wappalyzer engine with 3,700+ technology signatures, version extraction, and authentic logos.",
   "scripts": {
-    "validate": "node -e \"JSON.parse(require('fs').readFileSync('manifest.json', 'utf8')); console.log('manifest.json is valid')\" && node --check content.js && node --check popup.js && node --check injected.js && node --check techIcons.js && node --check background.js"
+    "validate": "node -e \"JSON.parse(require('fs').readFileSync('manifest.json', 'utf8')); console.log('manifest.json is valid')\" && node --check content.js && node --check popup.js && node --check injected.js && node --check techIcons.js && node --check background.js && node --check wappalyzerEngine.js && node --check data/categories.js && node --check data/technologies.js && node --check data/domRules.js && node --check data/jsChains.js",
+    "test": "node test-e2e.js"
   }
 }

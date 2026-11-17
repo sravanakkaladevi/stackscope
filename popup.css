@@ -387,6 +387,21 @@ body {
   flex-shrink: 0;
 }
 
+.wappa-icon img,
+.tech-icon-img {
+  width: 18px;
+  height: 18px;
+  object-fit: contain;
+  display: block;
+}
+
+.modal-icon-wrapper img {
+  width: 26px;
+  height: 26px;
+  object-fit: contain;
+  display: block;
+}
+
 .wappa-name-group {
   display: flex;
   align-items: baseline;

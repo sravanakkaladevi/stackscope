@@ -58,8 +58,8 @@ const elements = {
 };
 
 function openTechModal(item) {
-  const iconSvg = typeof getTechIcon === "function" ? getTechIcon(item.name) : "";
-  const meta = typeof getTechMeta === "function" ? getTechMeta(item.name) : { description: "", url: "#" };
+  const iconSvg = typeof getTechIcon === "function" ? getTechIcon(item) : "";
+  const meta = typeof getTechMeta === "function" ? getTechMeta(item) : { description: "", url: "#" };
 
   elements.modalIcon.innerHTML = iconSvg;
   elements.modalName.textContent = item.name;
@@ -100,26 +100,25 @@ function renderWappalyzerGrid() {
   // Category filter
   let filtered = allItems.filter((item) => {
     if (activeCategory === "All") return true;
+    if (item.uiCategory === activeCategory) return true;
     if (activeCategory === "Framework")
-      return item.category === "Framework" || item.category === "Library";
+      return item.uiCategory === "Framework" || item.category === "Framework" || item.category === "Library" || item.category === "JavaScript frameworks" || item.category === "Web frameworks" || item.category === "Static site generator" || item.category === "JavaScript libraries";
     if (activeCategory === "Styling & UI")
-      return item.category === "Styling & UI" || item.category === "Styling";
+      return item.uiCategory === "Styling & UI" || item.category === "Styling & UI" || item.category === "Styling" || item.category === "UI frameworks" || item.category === "Font scripts" || item.category === "Page builders";
     if (activeCategory === "Backend / BaaS")
-      return item.category === "Backend & BaaS" || item.category === "Build Tools" || item.category === "Infrastructure & CDN" || item.category === "Infrastructure & Hosting";
+      return item.uiCategory === "Backend / BaaS" || item.category === "Backend & BaaS" || item.category === "Build Tools" || item.category === "Infrastructure & CDN" || item.category === "Web servers" || item.category === "PaaS" || item.category === "IaaS" || item.category === "CDN" || item.category === "Databases" || item.category === "Hosting";
     if (activeCategory === "CMS & Store")
-      return item.category === "CMS & Commerce" || item.category === "CMS" || item.category === "Commerce";
+      return item.uiCategory === "CMS & Store" || item.category === "CMS & Commerce" || item.category === "CMS" || item.category === "Commerce" || item.category === "Ecommerce" || item.category === "Blogs" || item.category === "Payment processors";
     if (activeCategory === "Analytics")
-      return item.category === "Analytics & Marketing" || item.category === "Analytics";
+      return item.uiCategory === "Analytics" || item.category === "Analytics & Marketing" || item.category === "Analytics" || item.category === "Tag managers" || item.category === "Marketing automation" || item.category === "CRM";
     if (activeCategory === "Marketing")
-      return ["A/B Testing", "Advertising", "Affiliate Programs", "Cookie Compliance"].includes(item.category);
+      return item.category.includes("Marketing") || item.category.includes("Advertising") || item.category.includes("CRM") || item.category.includes("SEO");
     if (activeCategory === "Libraries")
-      return item.category === "Library" || item.category === "JavaScript Libraries";
+      return item.category === "JavaScript libraries" || item.category === "Font scripts" || item.category === "Miscellaneous" || item.category === "JavaScript graphics";
     if (activeCategory === "Security")
-      return item.category === "Security" || item.category === "Issue Trackers";
-    if (activeCategory === "Site Signals")
-      return ["Miscellaneous", "Network Protocols", "Performance"].includes(item.category);
+      return item.category === "Security" || item.category === "Authentication" || item.category === "Cookie compliance" || item.category === "SSL/TLS certificate authorities";
     if (activeCategory === "Languages")
-      return item.category === "Languages" || item.category === "Language";
+      return item.uiCategory === "Languages" || item.category === "Languages" || item.category === "Language" || item.category === "Programming languages";
 
     return item.category === activeCategory;
   });
@@ -169,7 +168,7 @@ function renderWappalyzerGrid() {
     listEl.className = "cat-items-list";
 
     items.forEach((item) => {
-      const iconSvg = typeof getTechIcon === "function" ? getTechIcon(item.name) : "";
+      const iconSvg = typeof getTechIcon === "function" ? getTechIcon(item) : "";
       const versionStr = item.version ? item.version : "";
 
       const itemEl = document.createElement("div");
@@ -232,97 +231,45 @@ function renderResults(data, tabFavicon) {
   renderWappalyzerGrid();
 }
 
-function fallbackDomainScan(tab) {
-  const urlObj = new URL(tab.url || "https://localhost");
-  const host = urlObj.hostname.toLowerCase();
-  const techs = [];
-
-  if (/(?:^|\.)google\.com$|(?:^|\.)google\.co\.|mail\.google\.com|docs\.google\.com|drive\.google\.com|youtube\.com/i.test(host)) {
-    techs.push({
-      name: "Google Cloud / Infrastructure",
-      category: "Infrastructure & Hosting",
-      confidence: "High",
-      evidence: `Domain hostname match: ${host}`,
-    });
-    techs.push({
-      name: "Google Workspace",
-      category: "Infrastructure & Hosting",
-      confidence: "High",
-      evidence: `Google Workspace web application: ${host}`,
-    });
-    techs.push({
-      name: "Google Closure Library",
-      category: "Framework",
-      confidence: "Medium",
-      evidence: "Google Workspace Closure framework architecture",
-    });
-  } else if (/(?:^|\.)vercel\.(?:app|dev)$/i.test(host)) {
-    techs.push({ name: "Vercel", category: "Infrastructure & Hosting", confidence: "High", evidence: `Vercel domain match: ${host}` });
-  } else if (/(?:^|\.)netlify\.(?:app|com)$/i.test(host)) {
-    techs.push({ name: "Netlify", category: "Infrastructure & Hosting", confidence: "High", evidence: `Netlify domain match: ${host}` });
-  } else if (/(?:^|\.)github\.io$/i.test(host)) {
-    techs.push({ name: "GitHub Pages", category: "Infrastructure & Hosting", confidence: "High", evidence: `GitHub Pages domain match: ${host}` });
-  } else if (/(?:^|\.)pages\.dev$/i.test(host)) {
-    techs.push({ name: "Cloudflare Pages", category: "Infrastructure & Hosting", confidence: "High", evidence: `Cloudflare Pages domain match: ${host}` });
-    techs.push({ name: "Cloudflare", category: "Infrastructure & CDN", confidence: "High", evidence: "Cloudflare network infrastructure" });
-  } else if (/(?:^|\.)firebaseapp\.com$|(?:^|\.)web\.app$/i.test(host)) {
-    techs.push({ name: "Firebase Hosting", category: "Infrastructure & Hosting", confidence: "High", evidence: `Firebase Hosting domain match: ${host}` });
-  } else if (/(?:^|\.)myshopify\.com$/i.test(host)) {
-    techs.push({ name: "Shopify", category: "CMS & Commerce", confidence: "High", evidence: `Shopify domain match: ${host}` });
-  }
-
-  const languages = [
-    { name: "JavaScript", category: "Languages", evidence: "ECMAScript client runtime signature" },
-    { name: "HTML / CSS", category: "Languages", evidence: "Document markup and stylesheet signature" }
-  ];
-
-  return {
-    url: tab.url,
-    title: tab.title || host,
-    hostname: host,
-    technologies: techs,
-    languages,
-    scannedAt: new Date().toISOString(),
-  };
-}
-
-function scanActiveTab() {
+function scanActiveTab(isRescan = false) {
   elements.status.className = "status-bar status-scanning";
-  elements.statusText.textContent = "Scanning signatures...";
+  elements.statusText.textContent = isRescan ? "Rescanning signatures..." : "Scanning signatures...";
 
   chrome.tabs.query({ active: true, currentWindow: true }, ([tab]) => {
     if (!tab?.id) return;
 
     const tabFavicon = tab.favIconUrl;
+    const msgType = isRescan ? "rescan-page" : "get-page-stack";
 
-    chrome.tabs.sendMessage(tab.id, { type: "scan-page" }, (data) => {
-      if (chrome.runtime.lastError || !data) {
-        if (tab.url && (tab.url.startsWith("http://") || tab.url.startsWith("https://"))) {
-          const fallbackData = fallbackDomainScan(tab);
-          renderResults(fallbackData, tabFavicon);
-          return;
-        }
-
-        elements.status.className = "status-bar";
-        elements.statusText.textContent = "Restricted browser page";
-        elements.pageTitle.textContent = "System / Store Page";
-        elements.pageHost.textContent = tab.url ? new URL(tab.url).hostname : "chrome://";
-        elements.technologyCount.textContent = "0";
-        elements.highConfidenceCount.textContent = "0";
-        elements.versionCount.textContent = "0";
-        elements.gridContainer.innerHTML = `
-          <div style="grid-column: span 2; text-align: center; padding: 25px; color: var(--text-muted); font-size: 11px;">
-            Chrome restricts extensions on local browser pages. Open a standard website to detect its technologies.
-          </div>
-        `;
+    chrome.runtime.sendMessage({ type: msgType, tabId: tab.id }, (data) => {
+      if (!chrome.runtime.lastError && data && data.technologies) {
+        renderResults(data, tabFavicon);
         return;
       }
 
-      renderResults(data, tabFavicon);
+      // Fallback: direct query to tab content script
+      chrome.tabs.sendMessage(tab.id, { type: "scan-page" }, (pageData) => {
+        if (chrome.runtime.lastError || !pageData) {
+          elements.status.className = "status-bar";
+          elements.statusText.textContent = "Restricted browser page";
+          elements.pageTitle.textContent = "System / Store Page";
+          elements.pageHost.textContent = tab.url ? new URL(tab.url).hostname : "chrome://";
+          elements.technologyCount.textContent = "0";
+          elements.highConfidenceCount.textContent = "0";
+          elements.versionCount.textContent = "0";
+          elements.gridContainer.innerHTML = `
+            <div style="grid-column: span 2; text-align: center; padding: 25px; color: var(--text-muted); font-size: 11px;">
+              Chrome restricts extensions on local browser pages. Open a standard website to detect its technologies.
+            </div>
+          `;
+          return;
+        }
+
+        renderResults(pageData, tabFavicon);
+      });
     });
   });
 }
-
 
 function copyStackToClipboard() {
   if (!currentData) return;
@@ -454,7 +401,7 @@ if (elements.rescanBtn) {
         icon.style.transform = "rotate(0deg)";
       }, 500);
     }
-    scanActiveTab();
+    scanActiveTab(true);
   });
 }
 

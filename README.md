@@ -5,25 +5,24 @@
 </p>
 
 <p align="center">
-  <b>Discover what powers the web.</b> A privacy-first, local-engine Chrome Extension that detects 70+ web technologies, frameworks, UI libraries, analytics tools, CDNs, and programming languages with version extraction and crisp vector SVG logos.
+  <b>Discover what powers the web.</b> A privacy-first, local-engine Chrome Extension powered by the <b>Wappalyzer detection engine</b> with <b>3,700+ web technology signatures</b>, 3,300+ authentic logos, HTTP response header analysis, version extraction, and dependency tree resolution.
 </p>
 
 ---
 
 ## ✨ Key Features
 
-- **🔍 70+ Technology Signatures**: Detects React, Next.js, Vue, Nuxt, Angular, Svelte, Astro, Remix, Tailwind CSS, Bootstrap, Material UI, Shadcn/Radix, WordPress, Shopify, Webflow, Firebase, Supabase, Stripe, Clerk, PostHog, Mixpanel, Vite, Webpack, Cloudflare, Vercel, Netlify, and more!
-- **🔢 Real-time Toolbar Badge Overlay**: Shows the live count of detected technologies on your browser toolbar icon (e.g., `13`, `8`, `5`) automatically as you browse.
-- **🏷️ Version Extraction & Evidence**: Captures exact version numbers (e.g., `React v18.2.0`, `jQuery v3.6.0`) and detection evidence (DOM attributes, window objects, global scripts).
-- **🎨 Wappalyzer-Inspired 2-Column UI**: Beautiful 2-column category grid layout (`Frameworks`, `UI & Styling`, `CMS & Commerce`, `Analytics & Marketing`, `Backend & Infra`, `Languages`).
-- **🔍 Detailed Tech Inspector Drawer**: Click any detected technology to open a rich detail modal showing description, evidence, confidence level, and official documentation links.
+- **🔍 3,700+ Technology Signatures**: Comprehensive coverage powered by Wappalyzer's open-source database (React, Next.js, Vue, Nuxt, Angular, Svelte, Astro, Remix, Tailwind CSS, Bootstrap, WordPress, Shopify, Cloudflare, Vercel, Netlify, AWS, Google Analytics, Stripe, Clerk, and thousands more).
+- **🌐 HTTP Response Header Inspection**: Detects servers, hosting providers, caching layers, and web frameworks directly from HTTP response headers (e.g. `Server: Vercel`, `X-Powered-By: Next.js`, `Server: cloudflare`, `X-Drupal-Cache`).
+- **🎨 3,300+ Authentic Vector & High-Res Logos**: Crisp SVG/PNG logos for detected technologies rendered directly in the popup and inspector drawer.
+- **🔢 Real-time Toolbar Badge Overlay**: Shows the live count of detected technologies on your browser toolbar icon automatically as you browse.
+- **🏷️ Version Extraction & Evidence**: Captures exact version numbers (e.g. `Next.js v14.2.3`, `React v18.2.0`, `WordPress v6.4.2`) with transparent detection evidence (HTTP headers, scripts, DOM, window variables, or implications).
+- **🌳 Implication Tree Resolution**: Understands technology relationships (e.g., Next.js automatically implies React, Node.js, and Webpack; WordPress implies PHP and MySQL).
+- **🎨 Wappalyzer-Inspired 2-Column UI**: Categorized grid layout (`Frameworks`, `UI & Styling`, `CMS & Store`, `Analytics`, `Backend & Infra`, `Languages`).
+- **🔍 Detailed Tech Inspector Drawer**: Click any detected technology to open a modal showing description, evidence, confidence level, and official documentation links.
 - **🌓 Light & Dark Theme Support**: Instant theme switching with preference persistence (`localStorage`) and automatic system theme detection.
 - **📥 Export Capabilities**: Easily copy a formatted Markdown tech stack report or download a complete JSON stack analysis.
 - **🛡️ 100% Privacy-First & Local**: Performs all scanning directly on your machine inside Chrome. No remote servers, no tracking, zero network dependencies.
-
-### Detection Scope
-
-StackScope reports technologies only when it can find browser-visible evidence, such as page markup, loaded resource URLs, or JavaScript globals. Versions are shown only when the page exposes them. Server fingerprints such as Nginx versions and CDN response headers are not inferred because this extension does not request broad network-inspection permissions; HTTP/3 is reported only when the browser exposes `h3` through Resource Timing.
 
 ---
 
@@ -39,17 +38,16 @@ StackScope reports technologies only when it can find browser-visible evidence, 
 
 ### Load Unpacked Extension in Chrome / Edge
 
-1. **Clone or Download** this repository:
-   ```bash
-   git clone https://github.com/sravanakkaladevi/stackscope.git
-   ```
-2. Open **Google Chrome** or **Microsoft Edge** and go to:
+1. Open **Google Chrome** or **Microsoft Edge** and go to:
    - Chrome: `chrome://extensions`
    - Edge: `edge://extensions`
-3. Enable **Developer mode** (toggle in top-right corner).
-4. Click **Load unpacked** button.
-5. Select the `stackscope` folder directory.
-6. Open any public website (e.g., [Shopify](https://shopify.com), [Vercel](https://vercel.com), [Next.js](https://nextjs.org)) and click the **StackScope** toolbar icon!
+2. Enable **Developer mode** (toggle in top-right corner).
+3. Click **Load unpacked** button.
+4. Select the `stackscope-main` folder directory:
+   ```
+   C:\Users\srava\Downloads\stackscope-main\stackscope-main
+   ```
+5. Open any website (e.g. [Vercel](https://vercel.com), [Shopify](https://shopify.com), [Next.js](https://nextjs.org), [GitHub](https://github.com)) and click the **StackScope** toolbar icon!
 
 ---
 
@@ -57,29 +55,41 @@ StackScope reports technologies only when it can find browser-visible evidence, 
 
 ```
 stackscope/
-├── manifest.json       # Manifest V3 configuration & permissions
+├── manifest.json       # Manifest V3 configuration, permissions & resources
 ├── logo.png            # StackScope official brand icon
-├── background.js       # Background service worker (toolbar badge counter)
-├── content.js          # DOM, script tag & HTML signature scanner
-├── injected.js         # Main-world window global variables inspector
-├── techIcons.js        # SVG logo dictionary & technology metadata
+├── background.js       # Service worker (HTTP headers inspector & badge updater)
+├── wappalyzerEngine.js # Core Wappalyzer detection, regex matching & resolution engine
+├── content.js          # DOM, script URLs, meta tags & cookies collector
+├── injected.js         # Main-world window global variables & fiber inspector
+├── techIcons.js        # SVG logo dictionary, icon resolver & metadata
 ├── popup.html          # Extension popup UI structure
 ├── popup.css           # Modern glassmorphism UI styles (Light & Dark themes)
-├── popup.js            # Popup interaction logic, filtering & exports
-└── package.json        # Validation scripts & package config
+├── popup.js            # Popup interaction logic, category filtering & exports
+├── data/               # Precompiled technology definitions & rules
+│   ├── categories.json # 108 Wappalyzer category definitions
+│   ├── categories.js   # Fast-loading categories dataset
+│   ├── technologies.json # 3,774 technology definitions & patterns
+│   ├── technologies.js   # Fast-loading technologies dataset
+│   ├── domRules.js     # Extracted DOM selector rules
+│   └── jsChains.js     # Extracted window property chains
+├── icons/              # 3,300+ authentic technology SVG & PNG icons
+├── test-e2e.js         # Multi-scenario detection test suite
+└── package.json        # Validation and test scripts
 ```
 
 ---
 
 ## 🧪 Development & Validation
 
-To test and validate project file syntax:
+To test and validate project file syntax and run the detection test suite:
 
 ```bash
+# Validate manifest and all script syntax
 npm run validate
-```
 
-This runs JSON validation on `manifest.json` and syntax checks on all JavaScript files (`content.js`, `popup.js`, `injected.js`, `techIcons.js`, `background.js`).
+# Run multi-scenario detection tests
+npm test
+```
 
 ---
 
