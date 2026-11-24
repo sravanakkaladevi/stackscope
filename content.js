@@ -155,39 +155,66 @@
         if (!nodes || !nodes.length) continue;
 
         const firstNode = nodes[0];
+        let matched = false;
+        let matchVal = '';
+
+        // 1. Element presence check (only if rule explicitly specified exists: true)
         if (rule.exists) {
-          matches.push({ name: rule.name, selector: rule.selector, exists: '' });
+          matched = true;
         }
+
+        // 2. Element text check
         if (rule.text && firstNode.innerText) {
+          const text = firstNode.innerText.slice(0, 500).trim();
+          try {
+            const cleanPattern = String(rule.text).split('\\;')[0];
+            if (!cleanPattern || new RegExp(cleanPattern, 'i').test(text)) {
+              matched = true;
+              matchVal = text;
+            }
+          } catch (e) {}
+        }
+
+        // 3. Element attributes check
+        if (rule.attributes && typeof rule.attributes === 'object') {
+          for (const [attr, rawPattern] of Object.entries(rule.attributes)) {
+            if (firstNode.hasAttribute(attr)) {
+              const attrVal = firstNode.getAttribute(attr) || '';
+              const cleanPattern = String(rawPattern).split('\\;')[0];
+              try {
+                if (!cleanPattern || new RegExp(cleanPattern, 'i').test(attrVal)) {
+                  matched = true;
+                  matchVal = attrVal;
+                  break;
+                }
+              } catch (e) {}
+            }
+          }
+        }
+
+        // 4. Element properties check
+        if (rule.properties && typeof rule.properties === 'object') {
+          for (const [prop, rawPattern] of Object.entries(rule.properties)) {
+            if (prop in firstNode) {
+              const propVal = String(firstNode[prop] || '');
+              const cleanPattern = String(rawPattern).split('\\;')[0];
+              try {
+                if (!cleanPattern || new RegExp(cleanPattern, 'i').test(propVal)) {
+                  matched = true;
+                  matchVal = propVal;
+                  break;
+                }
+              } catch (e) {}
+            }
+          }
+        }
+
+        if (matched) {
           matches.push({
             name: rule.name,
             selector: rule.selector,
-            text: firstNode.innerText.slice(0, 200).trim(),
+            value: matchVal,
           });
-        }
-        if (rule.properties && Array.isArray(rule.properties)) {
-          for (const prop of rule.properties) {
-            if (prop in firstNode) {
-              matches.push({
-                name: rule.name,
-                selector: rule.selector,
-                property: prop,
-                value: String(firstNode[prop] || ''),
-              });
-            }
-          }
-        }
-        if (rule.attributes && Array.isArray(rule.attributes)) {
-          for (const attr of rule.attributes) {
-            if (firstNode.hasAttribute(attr)) {
-              matches.push({
-                name: rule.name,
-                selector: rule.selector,
-                attribute: attr,
-                value: firstNode.getAttribute(attr) || '',
-              });
-            }
-          }
         }
       } catch (e) {
         // Safe execution against complex/invalid selectors
@@ -249,7 +276,8 @@
     const languages = [];
     const sourceStr = (scriptSrc || []).join(' ') + ' ' + location.pathname;
 
-    if (/\.php(?:[?#]|$)|phpsessid/i.test(sourceStr + ' ' + document.cookie)) {
+    // Only detect server-side languages if explicit server endpoints or assets are present
+    if (/\.php(?:[?#]|$)/i.test(sourceStr)) {
       languages.push({
         name: 'PHP',
         category: 'Languages',
@@ -257,7 +285,7 @@
         version: null,
         confidence: 'High',
         icon: 'PHP.svg',
-        evidence: 'Found PHP session cookies or .php server endpoints',
+        evidence: 'Found .php server asset endpoints',
       });
     }
 
@@ -273,7 +301,7 @@
       });
     }
 
-    if (/\.py(?:[?#]|$)|django|flask|csrftoken/i.test(sourceStr + ' ' + document.cookie)) {
+    if (/\.py(?:[?#]|$)/i.test(sourceStr)) {
       languages.push({
         name: 'Python',
         category: 'Languages',
@@ -281,7 +309,7 @@
         version: null,
         confidence: 'High',
         icon: 'Python.svg',
-        evidence: 'Found Python Django CSRF token or WSGI assets',
+        evidence: 'Found Python WSGI/asset endpoints',
       });
     }
 

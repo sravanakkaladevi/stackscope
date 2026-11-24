@@ -21,20 +21,21 @@ if (chrome.webRequest && chrome.webRequest.onHeadersReceived) {
   chrome.webRequest.onHeadersReceived.addListener(
     (details) => {
       if (details.tabId < 0) return;
-      let existing = tabHeaders.get(details.tabId);
-      if (!existing || details.type === 'main_frame') {
-        existing = {};
-        tabHeaders.set(details.tabId, existing);
-      }
-      if (details.responseHeaders) {
-        for (let i = 0; i < details.responseHeaders.length; i++) {
-          const h = details.responseHeaders[i];
-          const key = h.name.toLowerCase();
-          if (!existing[key]) existing[key] = [];
-          if (h.value && !existing[key].includes(h.value)) {
-            existing[key].push(h.value);
+      // ONLY main_frame responses represent the host website's server/framework stack.
+      // Subresources (fonts, external scripts, images, CDNs) must NOT contaminate the page host headers.
+      if (details.type === 'main_frame') {
+        const headers = {};
+        if (details.responseHeaders) {
+          for (let i = 0; i < details.responseHeaders.length; i++) {
+            const h = details.responseHeaders[i];
+            const key = h.name.toLowerCase();
+            if (!headers[key]) headers[key] = [];
+            if (h.value && !headers[key].includes(h.value)) {
+              headers[key].push(h.value);
+            }
           }
         }
+        tabHeaders.set(details.tabId, headers);
       }
     },
     { urls: ['http://*/*', 'https://*/*'] },

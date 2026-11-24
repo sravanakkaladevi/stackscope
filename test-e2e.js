@@ -121,4 +121,56 @@ console.log('Testing End-to-End Scenarios with Wappalyzer Engine for StackScope.
   console.log('  -> PASSED\n');
 }
 
+// Test Case 4: Local Vite + React Dev Server (Strict False-Positive Immunity Check)
+{
+  const testViteLocal = {
+    url: 'http://localhost:5173/',
+    hostname: 'localhost',
+    headers: {
+      'connection': ['keep-alive']
+    },
+    scriptSrc: [
+      '/@vite/client',
+      '/src/main.jsx'
+    ],
+    cookies: {
+      // Cross-port leftover cookies from previous backend projects on localhost
+      'JSESSIONID': ['B1234567890ABCDEF'],
+      'csrftoken': ['dJ920dk102kdsak10'],
+      'django_language': ['en']
+    },
+    js: [
+      { name: 'React', chain: 'React.version', value: '18.3.1' },
+      { name: 'Vite', chain: '__vite_plugin_react_preamble_installed__', value: 'true' }
+    ],
+    dom: [],
+    languages: [
+      { name: 'JavaScript', category: 'Languages', uiCategory: 'Languages' },
+      { name: 'HTML / CSS', category: 'Languages', uiCategory: 'Languages' }
+    ]
+  };
+
+  const res = engine.analyzeAndResolve(testViteLocal);
+  const names = res.technologies.map(t => t.name);
+
+  console.log('Scenario 4: Local Vite + React Dev Server');
+  console.log('Detected:', names.join(', '));
+
+  // Must detect real technologies
+  assert(names.includes('React'), 'Must detect React');
+  assert(names.includes('Vite'), 'Must detect Vite');
+
+  // Must NOT detect false positives from cross-port cookies or DOM defaults
+  assert(!names.includes('Django'), 'Must NOT falsely detect Django on localhost from cross-port cookie');
+  assert(!names.includes('Java'), 'Must NOT falsely detect Java on localhost from cross-port cookie');
+  assert(!names.includes('Python'), 'Must NOT falsely detect Python on localhost');
+  assert(!names.includes('Pleroma'), 'Must NOT falsely detect Pleroma');
+  assert(!names.includes('Statping'), 'Must NOT falsely detect Statping');
+  assert(!names.includes('Hirschmann HiOS'), 'Must NOT falsely detect Hirschmann HiOS');
+  assert(!names.includes('PayPal'), 'Must NOT falsely detect PayPal');
+  assert(!names.includes('Apple Pay'), 'Must NOT falsely detect Apple Pay');
+
+  console.log('  -> PASSED (Zero false positives)\n');
+}
+
 console.log('All End-to-End detection scenarios verified successfully!');

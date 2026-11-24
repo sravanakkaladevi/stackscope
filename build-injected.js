@@ -22,7 +22,14 @@ const code = `(function () {
       for (let j = 0; j < parts.length; j++) {
         const part = parts[j];
         try {
-          if (val && (typeof val === 'object' || typeof val === 'function') && part in val) {
+          // Guard against DOM elements with id/name matching chain part
+          if (
+            val &&
+            (typeof val === 'object' || typeof val === 'function') &&
+            !(val instanceof Node) &&
+            !(typeof Element !== 'undefined' && val instanceof Element) &&
+            part in val
+          ) {
             val = val[part];
           } else {
             ok = false;
@@ -33,7 +40,13 @@ const code = `(function () {
           break;
         }
       }
-      if (ok && typeof val !== 'undefined') {
+      // Never match an HTMLElement or Node
+      if (
+        ok &&
+        typeof val !== 'undefined' &&
+        !(val instanceof Node) &&
+        !(typeof Element !== 'undefined' && val instanceof Element)
+      ) {
         let cleanVal = '';
         if (typeof val === 'string' || typeof val === 'number') {
           cleanVal = String(val).slice(0, 50);
@@ -87,4 +100,4 @@ const code = `(function () {
 `;
 
 fs.writeFileSync(path.join(__dirname, 'injected.js'), code, 'utf8');
-console.log('injected.js generated successfully! Length:', code.length);
+console.log('injected.js regenerated successfully! Length:', code.length);

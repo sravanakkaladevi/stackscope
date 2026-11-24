@@ -235,6 +235,8 @@
             }
             return { name: parts[0], confidence: impConfidence, version: impVersion };
           }),
+          requires: toArray(tech.requires).map((req) => (typeof req === 'string' ? req : req.name)),
+          requiresCategory: toArray(tech.requiresCategory).map((rc) => parseInt(rc, 10)),
           excludes: toArray(tech.excludes).map((ex) => (typeof ex === 'string' ? ex : ex.name)),
           url: this.transformPatterns(tech.url),
           headers: this.transformPatterns(tech.headers),
@@ -337,8 +339,21 @@
 
       // 3. Cookies
       if (cookies && Object.keys(cookies).length) {
+        const isLocalhost =
+          /(?:^https?:\/\/)?(?:localhost|127\.0\.0\.1|0\.0\.0\.0)(?::|\/|$)/i.test(url) ||
+          Boolean(data.hostname && /(?:localhost|127\.0\.0\.1|0\.0\.0\.0)/i.test(data.hostname));
+        const backendCats = [18, 22, 27]; // 18: Web frameworks, 22: Web servers, 27: Programming languages
+
         for (const tech of this.technologies) {
           if (!tech.cookies || typeof tech.cookies !== 'object') continue;
+
+          // On localhost, cookies are shared across all ports (RFC 6265).
+          // Leftover cookies from other local servers (e.g. JSESSIONID from Java on :8080, csrftoken/django_language on :8000)
+          // must not falsely identify backend frameworks or languages on a different local port.
+          if (isLocalhost && (tech.categories || []).some((c) => backendCats.includes(c))) {
+            continue;
+          }
+
           for (const [cookieName, patterns] of Object.entries(tech.cookies)) {
             const cookieVals = cookies[cookieName] || cookies[cookieName.toLowerCase()];
             if (!cookieVals) continue;
@@ -461,19 +476,26 @@
           const tech = this.getTechnology(item.name);
           if (!tech) continue;
           let version = item.value || '';
+          let matched = true;
           if (tech.js && tech.js[item.chain]) {
             const raw = tech.js[item.chain];
             const pattern = this.parsePattern(raw);
-            if (item.value && pattern.regex) {
-              version = this.resolveVersion(pattern, String(item.value)) || version;
+            if (pattern.regex) {
+              if (!item.value || !pattern.regex.test(String(item.value))) {
+                matched = false;
+              } else {
+                version = this.resolveVersion(pattern, String(item.value)) || version;
+              }
             }
           }
-          detections.push({
-            tech,
-            confidence: 100,
-            version: version && version !== 'true' ? String(version) : '',
-            evidence: `Window variable "window.${item.chain}"`,
-          });
+          if (matched) {
+            detections.push({
+              tech,
+              confidence: 100,
+              version: version && version !== 'true' ? String(version) : '',
+              evidence: `Window variable "window.${item.chain}"`,
+            });
+          }
         }
       }
 
@@ -555,6 +577,37 @@
               if (imp.version && !existingImp.version) {
                 existingImp.version = imp.version;
               }
+            }
+          }
+        }
+      }
+
+      // Resolve requires (prerequisites must be met)
+      let reqChanged = true;
+      let reqIterations = 0;
+      while (reqChanged && reqIterations < 10) {
+        reqChanged = false;
+        reqIterations++;
+        for (const [name, item] of Array.from(techMap.entries())) {
+          if (item.tech.requires && item.tech.requires.length) {
+            const hasAll = item.tech.requires.every((req) => techMap.has(req));
+            if (!hasAll) {
+              techMap.delete(name);
+              reqChanged = true;
+              continue;
+            }
+          }
+          if (item.tech.requiresCategory && item.tech.requiresCategory.length) {
+            const hasCat = item.tech.requiresCategory.some((catId) => {
+              for (const other of techMap.values()) {
+                if ((other.tech.categories || []).includes(catId)) return true;
+              }
+              return false;
+            });
+            if (!hasCat) {
+              techMap.delete(name);
+              reqChanged = true;
+              continue;
             }
           }
         }
